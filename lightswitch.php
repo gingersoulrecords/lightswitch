@@ -1,12 +1,20 @@
 <?php
-/*
-Plugin Name: LightSwitch
-Description: A plugin to toggle light/dark mode on your WordPress site.
-Version: 1.0
-Author: Dave Bloom
-*/
+/**
+ * Plugin Name: Lightswitch
+ * Plugin URI: https://lightswitchwp.com/
+ * Description: Simple CSS utilities for toggling/persisting custom body classes (e.g. light, dark).
+ * Version: 1.0.0
+ * Author: Dave Bloom
+ * Author URI: https://davebloom.co
+ * License: GPLv2 or later
+ */
+
+
 
 namespace WP_LightSwitch;
+
+const GINGERSOUL_LIGHTSWITCH_VERSION = '1.0.0';
+
 
 class WP_LightSwitch
 {
@@ -45,10 +53,16 @@ class WP_LightSwitch
         foreach ($_COOKIE as $key => $value) {
             if (strpos($key, 'ls-') === 0) {
                 $switchName = substr($key, 3);
-                $mode = $value;
+                if (strpos($value, '|') !== false) {
+                    list($originalMode, $mode) = explode('|', $value);
+                } else {
+                    $originalMode = $mode = $value;
+                }
 
                 $classes[] = $mode;
-                $classes[] = 'ls-' . $switchName . '-added-' . $mode;
+                $classes[] = 'ls-' . $switchName . '-added-' . $originalMode;
+                $classes[] = 'ls-' . $switchName . '-evaluatedmode-' . $mode; // Add the new class
+
             }
         }
 
